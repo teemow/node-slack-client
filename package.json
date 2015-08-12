@@ -5,7 +5,7 @@
   "main": "./index",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register --reporter spec",
-    "install": "grunt coffee"
+    "install": "grunt --gruntfile /hubot/node_modules/hubot-slack/node_modules/slack-client/Gruntfile.coffee coffee"
   },
   "keywords": [
     "slack"
