@@ -47,7 +47,9 @@ class Client extends EventEmitter
     @_apiCall 'rtm.start', {agent: 'node-slack'}, @_onLogin
 
   _onLogin: (data) =>
+    @logger.info '[node-slack-client] _onLogin called'
     @reconnecting = false
+    @logger.info "[node-slack-client] @reconnecting = #{@reconnecting}"
     if data
       if not data.ok
         @emit 'error', data.error
@@ -95,10 +97,12 @@ class Client extends EventEmitter
       if @autoReconnect then @reconnect()
 
   connect: ->
+    @logger.info "[node-slack-client] connect called"
     if not @socketUrl
       return false
     else
       @ws = new WebSocket @socketUrl
+      @logger.info "[node-slack-client] @ws = #{@ws}"
       @ws.on 'open', =>
         @_connAttempts = 0
         @_lastPong = Date.now()
@@ -126,9 +130,12 @@ class Client extends EventEmitter
         @emit 'error', error
 
       @ws.on 'close', =>
+        @logger.info "[node-slack-client] ws (#{@ws}) close event"
         @emit 'close' 
         # If autoReconnect is enabled and the client is not already reconnecting due to pong timeout
         # Then handle the normal WS termination/close by reconnecting
+        @logger.info "[node-slack-client] @reconnecting = #{@reconnecting}"
+        @logger.info "[node-slack-client] @autoReconnect = #{@autoReconnect}"
         if @autoReconnect && !@reconnecting
           @reconnect()
         @connected = false
@@ -155,6 +162,7 @@ class Client extends EventEmitter
 
   reconnect: ->
     @reconnecting = true
+    @logger.info "[node-slack-client] @reconnecting = #{@reconnecting}"
     if @_pongTimeout
       clearInterval @_pongTimeout
       @_pongTimeout = null
@@ -163,6 +171,7 @@ class Client extends EventEmitter
     
     # Test for a null value on ws to prevent system failure (e.g. if Bot is disabled)
     if @ws
+      @logger.info "[node-slack-client] ws (#{@ws}) calling close"
       @ws.close()
 
     @_connAttempts++
