@@ -124,6 +124,7 @@ class Client extends EventEmitter
       @ws.on 'error', (error)=>
         # TODO: Reconnect?
         @emit 'error', error
+        @reconnect()
 
       @ws.on 'close', =>
         @emit 'close' 
