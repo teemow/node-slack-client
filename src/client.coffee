@@ -124,7 +124,12 @@ class Client extends EventEmitter
       @ws.on 'error', (error)=>
         # TODO: Reconnect?
         @emit 'error', error
-        @reconnect()
+        if @autoReconnect && !@reconnecting
+          @ws.on "close" => 
+
+          @ws.close()
+          @logger.info 'closed websocket'
+          @reconnect()
 
       @ws.on 'close', =>
         @emit 'close' 
