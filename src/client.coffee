@@ -130,7 +130,7 @@ class Client extends EventEmitter
         # If autoReconnect is enabled and the client is not already reconnecting due to pong timeout
         # Then handle the normal WS termination/close by reconnecting
         if @autoReconnect && !@reconnecting
-          @reconnect()
+          process.exit 1
         @connected = false
         @socketUrl = null
 
